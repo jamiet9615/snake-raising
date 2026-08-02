@@ -254,16 +254,36 @@ export function GameProvider({ children }: { children: ReactNode }) {
       const snake = prev.active[idx];
       if (snake.stage === 'adult') return prev;
       const gain = food === 'apple' ? 15 : 40;
-      const { snake: evolved } = evolveIfReady({ ...snake, exp: snake.exp + gain });
+      const { snake: evolved, evolved: didEvolve } = evolveIfReady({ ...snake, exp: snake.exp + gain });
       const active = [...prev.active];
       active[idx] = evolved;
+
+      let apples = food === 'apple' ? prev.apples - 1 : prev.apples;
+      let eggs = food === 'egg' ? prev.eggs - 1 : prev.eggs;
+      let playerExp = prev.playerExp;
+      let playerLevel = prev.playerLevel;
+
+      if (didEvolve && playerLevel < MAX_PLAYER_LEVEL) {
+        playerExp += EVOLUTION_PLAYER_EXP;
+        let levelReward: { apples: number; eggs: number } | undefined;
+        while (playerLevel < MAX_PLAYER_LEVEL && playerExp >= PLAYER_EXP_PER_LEVEL) {
+          playerExp -= PLAYER_EXP_PER_LEVEL;
+          playerLevel += 1;
+          const r = LEVEL_REWARDS[playerLevel - 2];
+          if (r) {
+            levelReward = r;
+            apples += r.apples;
+            eggs += r.eggs;
+          }
+        }
+        if (playerLevel >= MAX_PLAYER_LEVEL) playerExp = 0;
+        if (levelReward) {
+          setLastLevelUp({ leveledUp: true, newLevel: playerLevel, reward: levelReward });
+        }
+      }
+
       success = true;
-      return {
-        ...prev,
-        active,
-        apples: food === 'apple' ? prev.apples - 1 : prev.apples,
-        eggs: food === 'egg' ? prev.eggs - 1 : prev.eggs,
-      };
+      return { ...prev, active, apples, eggs, playerExp, playerLevel };
     });
     return success;
   }, []);
@@ -278,11 +298,36 @@ export function GameProvider({ children }: { children: ReactNode }) {
       if (idx === -1) return prev;
       const snake = prev.active[idx];
       if (snake.stage === 'adult') return prev;
-      const { snake: evolved } = evolveIfReady({ ...snake, exp: snake.exp + UPGRADE_EXP });
+      const { snake: evolved, evolved: didEvolve } = evolveIfReady({ ...snake, exp: snake.exp + UPGRADE_EXP });
       const active = [...prev.active];
       active[idx] = evolved;
+
+      let apples = prev.apples;
+      let eggs = prev.eggs;
+      let playerExp = prev.playerExp;
+      let playerLevel = prev.playerLevel;
+
+      if (didEvolve && playerLevel < MAX_PLAYER_LEVEL) {
+        playerExp += EVOLUTION_PLAYER_EXP;
+        let levelReward: { apples: number; eggs: number } | undefined;
+        while (playerLevel < MAX_PLAYER_LEVEL && playerExp >= PLAYER_EXP_PER_LEVEL) {
+          playerExp -= PLAYER_EXP_PER_LEVEL;
+          playerLevel += 1;
+          const r = LEVEL_REWARDS[playerLevel - 2];
+          if (r) {
+            levelReward = r;
+            apples += r.apples;
+            eggs += r.eggs;
+          }
+        }
+        if (playerLevel >= MAX_PLAYER_LEVEL) playerExp = 0;
+        if (levelReward) {
+          setLastLevelUp({ leveledUp: true, newLevel: playerLevel, reward: levelReward });
+        }
+      }
+
       success = true;
-      return { ...prev, coins: prev.coins - UPGRADE_COST, active };
+      return { ...prev, coins: prev.coins - UPGRADE_COST, active, apples, eggs, playerExp, playerLevel };
     });
     return success;
   }, []);

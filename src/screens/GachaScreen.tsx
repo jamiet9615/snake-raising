@@ -51,7 +51,7 @@ export default function GachaScreen() {
     <div className="absolute inset-0 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-fuchsia-100 via-pink-100 to-rose-200" />
       <div
-        className="absolute inset-x-0 top-[6%] h-[88%] bg-cover bg-center"
+        className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${ASSETS.images.gachaBg})` }}
       />
 

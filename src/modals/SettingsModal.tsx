@@ -5,7 +5,7 @@ import { Trash2 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
 // SettingsModal — 設定版面 panel with BGM/SFX toggles + reset.
-// Toggles are overlaid on the panel, positioned to the left.
+// Toggles are overlaid on the panel, positioned on the right half.
 // Tap anywhere outside the panel to close.
 // ---------------------------------------------------------------------------
 
@@ -34,12 +34,12 @@ export default function SettingsModal({ open, onClose }: SettingsModalProps) {
           placeholderLabel="設定版面"
         />
 
-        {/* BGM toggle — positioned on the left side of the panel */}
+        {/* BGM toggle — positioned on the right half of the panel */}
         <button
           type="button"
           onClick={toggleBgm}
           className="btn-float absolute"
-          style={{ border: 'none', background: 'transparent', cursor: 'pointer', top: '25%', left: '12%' }}
+          style={{ border: 'none', background: 'transparent', cursor: 'pointer', top: '25%', left: '60%' }}
           aria-label="背景音樂開關"
         >
           <AssetImage
@@ -51,12 +51,12 @@ export default function SettingsModal({ open, onClose }: SettingsModalProps) {
           />
         </button>
 
-        {/* SFX toggle — positioned on the left side, below BGM */}
+        {/* SFX toggle — positioned on the right half, below BGM */}
         <button
           type="button"
           onClick={toggleSfx}
           className="btn-float absolute"
-          style={{ border: 'none', background: 'transparent', cursor: 'pointer', top: '50%', left: '12%' }}
+          style={{ border: 'none', background: 'transparent', cursor: 'pointer', top: '50%', left: '60%' }}
           aria-label="音效開關"
         >
           <AssetImage

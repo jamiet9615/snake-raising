@@ -31,7 +31,7 @@ export default function GameScreen() {
     <div className="absolute inset-0 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-lime-100 via-emerald-50 to-green-200" />
       <div
-        className="absolute inset-x-0 top-[6%] h-[88%] bg-cover bg-center"
+        className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${ASSETS.images.gameBg})` }}
       />
 

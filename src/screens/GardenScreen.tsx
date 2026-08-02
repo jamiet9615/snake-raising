@@ -28,11 +28,11 @@ export default function GardenScreen() {
         <FloatButton src={ASSETS.images.exitBtn} alt="返回" square onClick={() => setScreen('game')} className="h-20 w-20 sm:h-24 sm:w-24" />
       </div>
 
-      <div className="relative z-10 flex h-full flex-col items-center gap-6 px-4 pt-24">
+      <div className="relative z-10 flex h-full flex-col items-center px-4 pt-24">
         <h2 className="text-2xl font-black text-emerald-600 drop-shadow-[0_2px_0_rgba(255,255,255,0.8)]">退休花園</h2>
 
-        {/* Retired snakes */}
-        <div className="flex flex-wrap items-end justify-center gap-6 px-4">
+        {/* Retired snakes — anchored to the bottom third of the screen */}
+        <div className="flex flex-wrap items-end justify-center gap-6 px-4 absolute bottom-[8%] left-0 right-0">
           {state.garden.length === 0 && (
             <p className="text-sm font-bold text-emerald-600/70">花園尚無退休蛇蛇，讓成年蛇畢業後就會入住喔！</p>
           )}

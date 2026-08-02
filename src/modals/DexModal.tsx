@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { ASSETS } from '../game/constants';
 import { SPECIES } from '../game/snakes';
+import { useGame } from '../lib/gameState';
 import { audio } from '../lib/audio';
 import AssetImage from '../components/AssetImage';
 
 // ---------------------------------------------------------------------------
-// DexModal — full-screen 圖鑑 panel. Shows one silhouette per page.
-// Tap ANYWHERE to advance pages with a click SFX. Exit button top-left.
-// Page 1: 青草蛇剪影 → 草莓蛇 → 天空蛇 → 海蛇 → 地頭蛇 → python
+// DexModal — full-screen 圖鑑 panel. Shows one species per page.
+// Tap the panel to advance pages with a click SFX. Exit button top-left.
+// Locked species show a silhouette; unlocked species show the adult art.
 // ---------------------------------------------------------------------------
 
 interface DexModalProps {
@@ -16,11 +17,13 @@ interface DexModalProps {
 }
 
 export default function DexModal({ open, onClose }: DexModalProps) {
+  const { state } = useGame();
   const [page, setPage] = useState(0);
   if (!open) return null;
 
   const maxPage = SPECIES.length - 1;
   const species = SPECIES[page];
+  const isUnlocked = state.unlocked.some((u) => u.speciesId === species.id);
 
   const next = () => {
     audio.playSfx('click');
@@ -36,7 +39,7 @@ export default function DexModal({ open, onClose }: DexModalProps) {
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
 
       <div className="relative" onClick={(e) => e.stopPropagation()}>
-        {/* Panel background */}
+        {/* Panel background — tap to advance */}
         <div className="relative" onClick={next}>
           <AssetImage
             src={ASSETS.images.dexPanel}
@@ -63,15 +66,21 @@ export default function DexModal({ open, onClose }: DexModalProps) {
             />
           </button>
 
-          {/* Silhouette centered in the panel — enlarged */}
-          <div className="absolute inset-0 flex items-center justify-center" onClick={next}>
+          {/* Species art centered in the panel */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center" onClick={next}>
             <AssetImage
-              src={species.art.silhouette}
+              src={isUnlocked ? species.art.adult.normal : species.art.silhouette}
               alt={species.name}
               className="h-64 w-64 object-contain sm:h-72 sm:w-72"
               placeholderRadius={16}
-              placeholderLabel={`${species.name} 剪影`}
+              placeholderLabel={`${species.name} ${isUnlocked ? '成蛇' : '剪影'}`}
             />
+            <span
+              className="mt-3 rounded-full px-4 py-1 text-sm font-extrabold text-white shadow"
+              style={{ background: species.accent }}
+            >
+              {isUnlocked ? species.name : '??? (未收集)'}
+            </span>
           </div>
 
           {/* Page number */}
